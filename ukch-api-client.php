@@ -1,6 +1,6 @@
 <?php
    /*
-   Plugin Name: UKCH API Client
+   Plugin Name: Ruby Client API
    Plugin URI: https://github.com/scman1
    description: >-
   a plugin to get data from ruby api
@@ -9,9 +9,9 @@
    Author URI: https://github.com/scman1
    License: GPL2
    */
-  
 
-function ukchapi_get_as_json( $action, $params ) {
+
+function api_get_as_json( $action, $params ) {
  
     $api_endpoint = "http://188.166.149.246/";
  
@@ -42,19 +42,20 @@ function ukchapi_get_as_json( $action, $params ) {
     return $json_data;
 }
 
-function show_publications_list() {
+function show_publications() {
 	 $params = array(
 				'page' => '1'
 			);	
-    $pubs_data = ukchapi_get_as_json('articles.json', $params); //decoded json data
+    $pubs_data = api_get_as_json('articles.json', $params); //decoded json data
 ?>    
-    <div class="publications-list">
+    <div class="shopping-cart">
+        <h3>Publications List Page 2</h3>
         <ul>
         <?php if (count($pubs_data) > 0) : ?>
  
             <?php foreach ($pubs_data as $item) : ?>  
                 <li>
-                    <?php echo $item["title"]; ?>, <?php echo $item["container_title"]; ?>,
+                    <?php echo $item["title"]; ?>, 
                     <?php echo $item["doi"]; ?>
                 </li>
             <?php endforeach; ?>
@@ -64,23 +65,54 @@ function show_publications_list() {
         <?php endif; ?>
         </ul>
     </div>
+    <div style="margin-top: 20px;">
+		<?php
+		  // JSON string
+		  $someJSON = '[{"name":"Jonathan Suh","gender":"male"},{"name":"William Philbin","gender":"male"},{"name":"Allison McKinnery","gender":"female"}]';
+		  // Convert JSON string to Array
+		  $someArray = json_decode($someJSON, true);
+		  
+
+		  // Convert JSON string to Object
+		  $someObject = json_decode($someJSON);
+		?>
+		<?php 
+		    $params = array(
+				'page' => '1',
+				'baz' => 'boom',
+				'cow' => 'milk',
+				'php' => 'hypertext processor'
+			);		
+		?>
+		<p style="font-size: 8pt;"><?php  print_r(http_build_query($params));        // Dump all data of the Array ?></p>
+		<p style="font-size: 8pt;"><?php  print_r($someArray);        // Dump all data of the Array ?></p>
+		  
+		<p style="font-size: 8pt;"><?php echo $someArray[0]["name"]; // Access Array data ?> </p>
+
+		<pre style="font-size: 8pt;"><?php print_r($someObject);      // Dump all data of the Object ?></pre>
+		 
+		<pre style="font-size: 8pt;"><?php echo $someObject[0]->name; // Access Object data ?></pre>
+		<pre style="font-size: 8pt;"><?php print(count($pubs_data)); ?></pre>
+		<pre style="font-size: 8pt;"><?php print_r($pubs_data[0][title]); ?></pre>
+		<pre style="font-size: 8pt;"><?php print_r($pubs_data); ?></pre>
+    </div>
 <?php
 }
 
 // Creating the widget 
-class uac_widget extends WP_Widget {
+class rac_widget extends WP_Widget {
   
 function __construct() {
 parent::__construct(
   
 // Base ID of your widget
-'uac_widget', 
+'rac_widget', 
   
 // Widget name will appear in UI
-__('UKCH API Client Widget', 'uac_widget_domain'), 
+__('Ruby API Client Widget', 'rac_widget_domain'), 
   
 // Widget description
-array( 'description' => __( 'Widget for querying UKCH rails API', 'uac_widget_domain' ), ) 
+array( 'description' => __( 'Sample widget based on WPBeginner Tutorial', 'rac_widget_domain' ), ) 
 );
 }
   
@@ -93,7 +125,7 @@ $title = apply_filters( 'widget_title', $instance['title'] );
 echo $args['before_widget'];
 if ( ! empty( $title ) )
 echo $args['before_title'] . $title . $args['after_title'];
-show_publications_list();
+show_publications();
 echo $args['after_widget'];
 }
           
@@ -103,7 +135,7 @@ if ( isset( $instance[ 'title' ] ) ) {
 $title = $instance[ 'title' ];
 }
 else {
-$title = __( 'New title', 'uac_widget_domain' );
+$title = __( 'New title', 'rac_widget_domain' );
 }
 // Widget admin form
 ?>
@@ -125,7 +157,7 @@ return $instance;
 } 
  
 // Register and load the widget
-function uac_load_widget() {
-    register_widget( 'uac_widget' );
+function rac_load_widget() {
+    register_widget( 'rac_widget' );
 }
-add_action( 'widgets_init', 'uac_load_widget' );
+add_action( 'widgets_init', 'rac_load_widget' );
