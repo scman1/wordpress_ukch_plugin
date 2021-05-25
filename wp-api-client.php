@@ -4,7 +4,7 @@
    Plugin URI: https://github.com/scman1
    description: >-
     Plugin to get data from UKCH API
-   Version: 0.2
+   Version: 0.3
    Author: ANH
    Author URI: https://github.com/scman1
    License: GPL
@@ -19,18 +19,20 @@ add_shortcode( 'ukch_articles', 'get_articles_data' );
 function get_articles_data($atts){
 	
 	$defaults = [
-		'title' => 'Table Title'
+		'title' => 'Table Title',
+		'action' => 'articles',
+		'page' => '1'
 	];
 	$atts = shortcode_atts($defaults, $atts, 'ukch_articles');
 	
 	$params = array(
-		'page' => '20'
+		'page' =>  $atts['page']
 	);	
 	
-	$results = get_articles ('articles.json', $params);
+	$results = get_articles ($atts['action'] . '.json', $params);
 
 	$html = "";
-	$html = "<h2>" . $atts['title'] . "</h2>";
+	$html = "<h2>" . $atts['title'] . " (".$atts['action']." page: "  . $atts['page'] . ")</h2>";
 	foreach ($results as $result){
 		$html .= "<p>";
 		$html .= "<b>" . $result["title"] . "</b>, ";
