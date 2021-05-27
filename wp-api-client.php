@@ -4,7 +4,7 @@
    Plugin URI: https://github.com/scman1
    description: >-
     Plugin to get data from UKCH API
-   Version: 0.3
+   Version: 0.4
    Author: ANH
    Author URI: https://github.com/scman1
    License: GPL
@@ -20,24 +20,38 @@ function get_articles_data($atts){
 	
 	$defaults = [
 		'title' => 'Table Title',
-		'action' => 'articles',
-		'page' => '1'
+		'action' => 'get_pubs',
+		'year' => '2020',
+		'theme' => 'BAG'
 	];
 	$atts = shortcode_atts($defaults, $atts, 'ukch_articles');
 	
 	$params = array(
-		'page' =>  $atts['page']
+		'theme' =>  $atts['theme'],
+		'year' =>  $atts['year']
 	);	
 	
 	$results = get_articles ($atts['action'] . '.json', $params);
 
 	$html = "";
-	$html = "<h2>" . $atts['title'] . " (".$atts['action']." page: "  . $atts['page'] . ")</h2>";
+	$html = "<h2>" . $atts['title']." - "  . $atts['year'] . "</h2>";
+	//parse the data and return a list of paragraphs
 	foreach ($results as $result){
 		$html .= "<p>";
+		$html .= $result["authors"];
+		$html .=  "(" . $result["year"] . "). ";
 		$html .= "<b>" . $result["title"] . "</b>, ";
-		$html .=  $result["container_title"] . ", ";
-		$html .=  $result["doi"] . ".";
+		$html .=  $result["publisher"] . ", ";
+		if ( $result["volume"]!="" ) {
+			$html .=  "vol. " . $result["volume"] . ", ";
+		}
+		if ( $result["issue"]!="" ) {
+			$html .=  "issue " . $result["issue"] . ", ";
+		}
+		if ( $result["page"]!="" ) {
+			$html .=  "page " . $result["issue"] . ". ";
+		}
+		$html .=  "DOI: " . $result["doi"] . ".";
 		$html .= "</p>";
 	}
 	return $html;
