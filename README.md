@@ -1,4 +1,4 @@
-# wordpress_ukch_api_plugin
+# wordpress_ukch_plugin
 Plugin and widget for displaying ukch api on wordpress
 
 Code developed/derived from the examples at
